@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gauntlet Challenge</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com/",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const images = [
+                "eldenring1.jpg", "eldenring2.jpg", "eldenring3.jpg", "eldenring4.jpg", "eldenring5.jpg",
+                "eldenring6.jpg", "eldenring7.jpg", "eldenring8.jpg", "eldenring9.jpg", "eldenring10.jpg"
+            ];
+
+            function loadImages(columnId, colNum) {
+                const column = document.getElementById(columnId);
+                images.forEach((img, index) => {
+                    let imgElem = document.createElement("img");
+                    imgElem.src = img;
+                    imgElem.className = "image";
+                    imgElem.dataset.index = index;
+                    imgElem.dataset.column = colNum;
+                    imgElem.onclick = validateImage;
+                    column.appendChild(imgElem);
+                });
+            }
+
+            function validateImage(event) {
+                let index = event.target.dataset.index;
+                let column = event.target.dataset.column;
+                set(ref(db, `progress/col${column}/${index}`), true);
+                new Audio("click.mp3").play(); // Son rétro gaming au clic
+            }
+
+            function syncProgress() {
+                [1, 2].forEach(colNum => {
+                    onValue(ref(db, `progress/col${colNum}`), snapshot => {
+                        snapshot.forEach(child => {
+                            let imgElems = document.querySelectorAll(`.column:nth-child(${colNum}) .image`);
+                            if (imgElems[child.key]) {
+                                imgElems[child.key].classList.add("validated");
+                            }
+                        });
+                    });
+                });
+            }
+
+            loadImages("col1", 1);
+            loadImages("col2", 2);
+            syncProgress();
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        body { 
+            text-align: center; 
+            font-family: 'Press Start 2P', cursive;
+            background: url('eldenring_background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px gold, 0 0 20px red;
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px gold, 0 0 20px red; }
+            to { text-shadow: 0 0 20px gold, 0 0 40px red; }
+        }
+        .container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 60px; 
+            padding: 20px;
+        }
+        .column { 
+            display: flex; 
+            flex-direction: column-reverse; 
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+        }
+        .image { 
+            width: 130px; 
+            height: 130px; 
+            cursor: pointer; 
+            transition: transform 0.2s ease-in-out, opacity 0.2s;
+            border-radius: 10px;
+            border: 4px solid gold;
+            margin: 8px;
+        }
+        .image:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 15px gold);
+        }
+        .validated { 
+            opacity: 0.3; 
+            border-color: lime;
+            filter: grayscale(100%) drop-shadow(0 0 15px lime);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Gauntlet Challenge</h1>
+    <div class="container">
+        <div class="column" id="col1"></div>
+        <div class="column" id="col2"></div>
+    </div>
+</body>
+</html>
