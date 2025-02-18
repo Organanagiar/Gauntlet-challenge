@@ -23,7 +23,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const images = [
-                "eldenring1.jpg", "eldenring2.jpg", "eldenring3.jpg", "eldenring4.jpg", "eldenring5.jpg",
+                "LOL.jpg", "eldenring2.jpg", "eldenring3.jpg", "eldenring4.jpg", "eldenring5.jpg",
                 "eldenring6.jpg", "eldenring7.jpg", "eldenring8.jpg", "eldenring9.jpg", "eldenring10.jpg"
             ];
 
@@ -31,7 +31,7 @@
                 const column = document.getElementById(columnId);
                 images.forEach((img, index) => {
                     let imgElem = document.createElement("img");
-                    imgElem.src = img;
+                    imgElem.src = `images/${img}`;
                     imgElem.className = "image";
                     imgElem.dataset.index = index;
                     imgElem.dataset.column = colNum;
@@ -44,7 +44,7 @@
                 let index = event.target.dataset.index;
                 let column = event.target.dataset.column;
                 set(ref(db, `progress/col${column}/${index}`), true);
-                new Audio("click.mp3").play(); // Son rétro gaming au clic
+                new Audio("click.mp3").play(); 
             }
 
             function syncProgress() {
@@ -70,22 +70,21 @@
         body { 
             text-align: center; 
             font-family: 'Press Start 2P', cursive;
-            background: url('eldenring_background.jpg') no-repeat center center fixed;
+            background: url('eldenring_bg.jpg') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff; 
             margin: 0; 
             padding: 20px;
-            overflow: hidden;
         }
         h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px gold, 0 0 20px red;
+            text-shadow: 0 0 10px cyan, 0 0 20px blue;
             animation: glow 1.5s infinite alternate;
         }
         @keyframes glow {
-            from { text-shadow: 0 0 10px gold, 0 0 20px red; }
-            to { text-shadow: 0 0 20px gold, 0 0 40px red; }
+            from { text-shadow: 0 0 10px cyan, 0 0 20px blue; }
+            to { text-shadow: 0 0 20px cyan, 0 0 40px blue; }
         }
         .container { 
             display: flex; 
@@ -100,7 +99,7 @@
             background: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
         }
         .image { 
             width: 130px; 
@@ -108,12 +107,12 @@
             cursor: pointer; 
             transition: transform 0.2s ease-in-out, opacity 0.2s;
             border-radius: 10px;
-            border: 4px solid gold;
+            border: 4px solid cyan;
             margin: 8px;
         }
         .image:hover {
             transform: scale(1.15);
-            filter: drop-shadow(0 0 15px gold);
+            filter: drop-shadow(0 0 15px cyan);
         }
         .validated { 
             opacity: 0.3; 
